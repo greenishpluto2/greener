@@ -1,7 +1,7 @@
 import { client } from "@/app/client";
 import Link from "next/link";
 import { getContract } from "thirdweb";
-import { baseSepolia } from "thirdweb/chains";
+import { sepolia } from "thirdweb/chains";
 import { useReadContract } from "thirdweb/react";
 
 type MyCampaignCardProps = {
@@ -11,7 +11,7 @@ type MyCampaignCardProps = {
 export const MyCampaignCard: React.FC<MyCampaignCardProps> = ({ contractAddress }) => {
     const contract = getContract({
         client: client,
-        chain: baseSepolia,
+        chain: sepolia,
         address: contractAddress,
     });
 

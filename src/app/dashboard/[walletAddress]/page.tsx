@@ -4,7 +4,7 @@ import { CROWDFUNDING_FACTORY } from "@/app/constants/contracts";
 import { MyCampaignCard } from "@/components/MyCampaignCard";
 import { useState } from "react";
 import { getContract } from "thirdweb";
-import { baseSepolia } from "thirdweb/chains";
+import { sepolia } from "thirdweb/chains";
 import { deployPublishedContract } from "thirdweb/deploys";
 import { useActiveAccount, useReadContract } from "thirdweb/react"
 
@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
     const contract = getContract({
         client: client,
-        chain: baseSepolia,
+        chain: sepolia,
         address: CROWDFUNDING_FACTORY,
     });
 
@@ -83,7 +83,7 @@ const CreateCampaignModal = (
             console.log("Deploying contract...");
             const contractAddress = await deployPublishedContract({
                 client: client,
-                chain: baseSepolia,
+                chain: sepolia,
                 account: account!,
                 contractId: "Crowdfunding",
                 contractParams: [
