@@ -98,4 +98,8 @@ const CreatePoolModal = (...
 
 ``` 
 
+### Pyth Feedback files
 
+Developer feedback for Pyth is provided here:
+[PDF file](https://github.com/greenishpluto2/greener/blob/main/Pyth_dev_feedback.pdf)
+and the same in [DOC file](https://github.com/greenishpluto2/greener/blob/main/Pyth_dev_feedback.doc)
