@@ -1,59 +1,29 @@
+# Greenish Pluto Prediction Market App
 
-![tw-banner](https://github.com/thirdweb-example/next-starter/assets/57885104/20c8ce3b-4e55-4f10-ae03-2fe4743a5ee8)
+A decentralized prediction market platform built on Sepolia testnet during ETHGlobal Bangkok hackathon 2024.
 
-# thirdweb-next-starter
+## 🚀 Technologies
 
-Starter template to build an onchain react native app with [thirdweb](https://thirdweb.com/) and [next](https://nextjs.org/).
+- **Frontend**: Next.js with thirdweb template
+- **Smart Contracts**: Solidity + Hardhat
+- **Blockchain**: Sepolia testnet
+- **Block Explorer**: Blockscout
 
-## Installation
+## 🔗 Smart Contracts
 
-Install the template using [thirdweb create](https://portal.thirdweb.com/cli/create)
+The smart contracts are deployed on Sepolia testnet and can be viewed on Blockscout explorer with verified code:
+[View Contract on Blockscout](https://eth-sepolia.blockscout.com/address/0x8fed78378216645fe64392acBaBa0e8c0114c875?tab=contract)
 
-```bash
-  npx thirdweb create app --next
-```
+All code (frontend and backend) is available on [GitHub](https://github.com/greenishpluto2/greener)
 
-## Environment Variables
+Frontend is deployed on Netlify:
+[Open App](https://glowing-hotteok-19562e.netlify.app/)
 
-To run this project, you will need to add the following environment variables to your .env file:
 
-`CLIENT_ID`
+## 🌐 Features
 
-To learn how to create a client ID, refer to the [client documentation](https://portal.thirdweb.com/typescript/v5/client). 
-
-## Run locally
-
-Install dependencies
-
-```bash
-yarn
-```
-
-Start development server
-
-```bash
-yarn dev
-```
-
-Create a production build
-
-```bash
-yarn build
-```
-
-Preview the production build
-
-```bash
-yarn start
-```
-
-## Resources
-
-- [Documentation](https://portal.thirdweb.com/typescript/v5)
-- [Templates](https://thirdweb.com/templates)
-- [YouTube](https://www.youtube.com/c/thirdweb)
-- [Blog](https://blog.thirdweb.com)
-
-## Need help?
-
-For help or feedback, please [visit our support site](https://thirdweb.com/support)
+- Create prediction market pools
+- Participate in predictions
+- Real-time balance tracking
+- Integrated with Sepolia testnet
+- Transparent transaction history via Blockscout
