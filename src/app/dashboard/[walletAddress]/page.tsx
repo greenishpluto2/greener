@@ -1,6 +1,6 @@
 'use client';
 import { client } from "@/app/client";
-import { CROWDFUNDING_FACTORY } from "@/app/constants/contracts";
+import { PREDICTION_MARKET_FACTORY } from "@/app/constants/contracts";
 import { MyPoolCard } from "@/components/MyPoolCard";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -17,13 +17,13 @@ export default function DashboardPage() {
     const contract = getContract({
         client: client,
         chain: sepolia,
-        address: CROWDFUNDING_FACTORY,
+        address: PREDICTION_MARKET_FACTORY,
     });
 
     // Get Campaigns
     const { data: myPools, isLoading: isLoadingMyPools, refetch } = useReadContract({
         contract: contract,
-        method: "function getUserCampaigns(address _user) view returns ((address campaignAddress, address owner, string name, uint256 creationTime)[])",
+        method: "function getUserPools(address _user) view returns ((address poolAddress, address owner, string name, uint256 creationTime)[])",
         params: [account?.address as string]
     });
     
@@ -42,7 +42,7 @@ export default function DashboardPage() {
                         myPools.map((pool, index) => (
                             <MyPoolCard
                                 key={index}
-                                contractAddress={pool.campaignAddress}
+                                contractAddress={pool.poolAddress}
                             />
                         ))
                     ) : (
@@ -72,9 +72,9 @@ const CreatePoolModal = (
     const account = useActiveAccount();
     const [isDeployingContract, setIsDeployingContract] = useState<boolean>(false);
     const [poolName, setPoolName] = useState<string>("");
-    const [campaignDescription, setPoolDescription] = useState<string>("");
-    const [maxLimit, setCampaignGoal] = useState<number>(1);
-    const [poolDeadline, setCampaignDeadline] = useState<number>(1);
+    const [poolDescription, setPoolDescription] = useState<string>("");
+    const [maxLimit, setPoolLimit] = useState<number>(1);
+    const [poolDeadline, setPoolDeadline] = useState<number>(1);
     
     // Deploy contract from CrowdfundingFactory
     const handleDeployContract = async () => {
@@ -85,14 +85,14 @@ const CreatePoolModal = (
                 client: client,
                 chain: sepolia,
                 account: account!,
-                contractId: "0x8fed78378216645fe64392acBaBa0e8c0114c875",
+                contractId: PREDICTION_MARKET_FACTORY,
                 contractParams: [
                     poolName,
-                    campaignDescription,
+                    poolDescription,
                     maxLimit,
                     poolDeadline
                 ],
-                publisher: "0x8fed78378216645fe64392acBaBa0e8c0114c875"
+                publisher: PREDICTION_MARKET_FACTORY
             });
             alert("Contract deployed successfully!");
         } catch (error) {
@@ -106,17 +106,17 @@ const CreatePoolModal = (
 
     const handlePoolGoal = (value: number) => {
         if (isNaN(value) || value < 0) {
-            setCampaignGoal(0);
+            setPoolLimit(0);
         } else {
-            setCampaignGoal(value);
+            setPoolLimit(value);
         }
     }
 
     const handlePoolLengthhange = (value: number) => {
         if (value < 1) {
-            setCampaignDeadline(1);
+            setPoolDeadline(1);
         } else {
-            setCampaignDeadline(value);
+            setPoolDeadline(value);
         }
     }
 
@@ -141,7 +141,7 @@ const CreatePoolModal = (
                     />
                     <label>Prediction Pool Description:</label>
                     <textarea
-                        value={campaignDescription}
+                        value={poolDescription}
                         onChange={(e) => setPoolDescription(e.target.value)}
                         placeholder="Pool Description"
                         className="mb-4 px-4 py-2 bg-slate-300 rounded-md"

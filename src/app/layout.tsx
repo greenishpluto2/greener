@@ -7,9 +7,9 @@ import Navbar from "@/components/Navbar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Green Pluto Prediction Pools",
+  title: "GP Prediction Pools",
   description:
-    "Green Pluto is a platform for creating and participating in prediction pools.",
+    "GP is a platform for creating and participating in prediction pools.",
   icons: {
     icon: [
       {

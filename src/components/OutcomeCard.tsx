@@ -5,22 +5,30 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input";
 import { parseEther } from "viem";
 
-type Tier = {
+type Outcome = {
     name: string;
-    amount: bigint;
-    backers: bigint;
+    totalBets: bigint;
+    initialProbability: bigint;
 };
 
-type TierCardProps = {
-    tier: Tier;
+type OutcomeCardProps = {
+    outcome: Outcome;
     index: number;
     contract: ThirdwebContract
     isEditing: boolean;
 }
 
-export const TierCard: React.FC<TierCardProps> = ({ tier, index, contract, isEditing }) => {
+export const OutcomeCard: React.FC<OutcomeCardProps> = ({ outcome, index, contract, isEditing }) => {
     const [amount, setAmount] = useState<string>("");
     const [error, setError] = useState<string>("");
+
+/*     console.log('Outcome Card Props:', {
+        name: outcome.name,
+        totalBets: outcome.totalBets.toString(),
+        initialProbability: outcome.initialProbability.toString(),
+        index: index,
+        isEditing: isEditing
+    }); */
 
     const validateAndConvertAmount = () => {
         if (!amount) {
@@ -33,20 +41,22 @@ export const TierCard: React.FC<TierCardProps> = ({ tier, index, contract, isEdi
             setError("Please enter a positive integer");
             return null;
         }
-
         setError("");
-        return parseEther(amount); // Converts ETH to Wei
+        // Convert to a tiny fraction of Wei (1 Wei = 1e-18 ETH)
+        return BigInt(numAmount); // Returns just 1 Wei regardless of input
     };
 
     return (
         <div className="max-w-sm flex flex-col justify-between p-6 bg-white border border-slate-100 rounded-lg shadow">
             <div>
                 <div className="flex flex-row justify-between items-center gap-4">
-                    <p className="text-2xl font-semibold shrink-0">{tier.name}</p>
+                    <div className="flex flex-col gap-1">
+                        <p className="text-2xl font-semibold shrink-0">{outcome.name}</p>
+                        <p className="text-sm font-semibold text-gray-500">Bets: ${outcome.totalBets.toString()}</p>
+                    </div>
                     <Input
                         type="number"
-                        placeholder="Enter amount in ETH"
-                        value={amount}
+                        placeholder="Fake $ amount"
                         onChange={(e) => setAmount(e.target.value)}
                         min="1"
                         step="1"
@@ -55,7 +65,7 @@ export const TierCard: React.FC<TierCardProps> = ({ tier, index, contract, isEdi
                 </div>
             </div>
             <div className="flex flex-row justify-between items-end">
-                <p className="text-xs font-semibold">Total bets: {tier.backers.toString()}</p>
+                
                 <div className="mt-4 space-y-2">
 
                     {error && <p className="text-sm text-red-500">{error}</p>}
@@ -71,14 +81,14 @@ export const TierCard: React.FC<TierCardProps> = ({ tier, index, contract, isEdi
 
                                 return prepareContractCall({
                                     contract: contract,
-                                    method: "function fund(uint256 _tierIndex) payable",
+                                    method: "function placeBet(uint256 _outcomeIndex) payable",
                                     params: [BigInt(index)],
                                     value: weiAmount,
                                 });
                             }}
                             onError={(error) => alert(`Error: ${error.message}`)}
                             onTransactionConfirmed={async () => {
-                                alert("Funded successfully!");
+                                alert("Predicted successfully!");
                                 setAmount("");
                             }}
                         >
@@ -96,7 +106,7 @@ export const TierCard: React.FC<TierCardProps> = ({ tier, index, contract, isEdi
                     <TransactionButton
                         transaction={() => prepareContractCall({
                             contract: contract,
-                            method: "function removeTier(uint256 _index)",
+                            method: "function removeOutcome(uint256 _index)",
                             params: [BigInt(index)],
                         })}
                         onError={(error) => alert(`Error: ${error.message}`)}

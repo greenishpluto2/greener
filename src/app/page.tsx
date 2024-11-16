@@ -4,20 +4,20 @@ import { client } from "./client";
 import { sepolia } from "thirdweb/chains";
 import { getContract } from "thirdweb";
 import { PoolCard } from "@/components/PoolCard";
-import { CROWDFUNDING_FACTORY } from "./constants/contracts";
+import { PREDICTION_MARKET_FACTORY } from "./constants/contracts";
 
 export default function Home() {
   // Get CrowdfundingFactory contract
   const contract = getContract({
     client: client,
     chain: sepolia,
-    address: CROWDFUNDING_FACTORY,
+    address: PREDICTION_MARKET_FACTORY,
   });
 
   // Get all campaigns deployed with CrowdfundingFactory
   const {data: pools, isLoading: isLoadingPools, refetch: refetchPools } = useReadContract({
     contract: contract,
-    method: "function getAllCampaigns() view returns ((address campaignAddress, address owner, string name)[])",
+    method: "function getAllPools() view returns ((address poolAddress, address owner, string name, uint256 creationTime)[])",
     params: []
   });
 
@@ -30,8 +30,8 @@ export default function Home() {
             pools.length > 0 ? (
               pools.map((pool) => (
                 <PoolCard
-                  key={pool.campaignAddress}
-                  poolAddress={pool.campaignAddress}
+                  key={pool.poolAddress}
+                  poolAddress={pool.poolAddress}
                 />
               ))
             ) : (

@@ -18,23 +18,23 @@ export const PoolCard: React.FC<PoolCardProps> = ({ poolAddress: poolAddress }) 
     });
 
     // Get Campaign Name
-    const { data: campaignName } = useReadContract({
+    const { data: poolName } = useReadContract({
         contract: contract,
         method: "function name() view returns (string)",
         params: []
     });
 
     // Get Campaign Description
-    const { data: campaignDescription } = useReadContract({
+    const { data: poolDescription } = useReadContract({
         contract: contract,
         method: "function description() view returns (string)",
         params: []
     });
 
     // Goal amount of the campaign
-    const { data: goal, isLoading: isLoadingGoal } = useReadContract({
+    const { data: maxLimit, isLoading: isLoadingGoal } = useReadContract({
         contract: contract,
-        method: "function goal() view returns (uint256)",
+        method: "function maxLimit() view returns (uint256)",
         params: [],
     });
 
@@ -50,9 +50,9 @@ export const PoolCard: React.FC<PoolCardProps> = ({ poolAddress: poolAddress }) 
             <div>
 
 
-                <h5 className="mb-2 text-2xl font-bold tracking-tight">{campaignName}</h5>
+                <h5 className="mb-2 text-2xl font-bold tracking-tight">{poolName}</h5>
 
-                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{campaignDescription}</p>
+                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{poolDescription}</p>
                 <div className="space-y-2 mb-4">
                     <div className="text-xl font-bold">
                         <span>Pool size </span>
@@ -61,7 +61,7 @@ export const PoolCard: React.FC<PoolCardProps> = ({ poolAddress: poolAddress }) 
                     <div className="text-sm text-muted-foreground flex justify-between">
                         <span>Limit: </span>
                         <span>
-                            {goal === 0n ? "No limit" : `$${goal?.toString()}`}
+                            {maxLimit === 0n ? "No limit" : `$${maxLimit?.toString()}`}
                         </span>
                     </div>
                 </div> </div>

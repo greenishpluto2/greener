@@ -1,6 +1,6 @@
 'use client';
 import { client } from "@/app/client";
-import { TierCard } from "@/components/TierCard";
+import { OutcomeCard } from "@/components/OutcomeCard";
 import { Button } from "@/components/ui/button";
 import { useParams } from "next/navigation";
 import { useState } from "react";
@@ -45,38 +45,38 @@ export default function CampaignPage() {
     // Check if deadline has passed
     const hasDeadlinePassed = deadlineDate < new Date();
 
-    // Goal amount of the campaign
-    const { data: goal, isLoading: isLoadingGoal } = useReadContract({
+    // Goal amount of the pool
+    const { data: predictedAmount, isLoading: isLoadingPredictedAmount } = useReadContract({
         contract: contract,
-        method: "function goal() view returns (uint256)",
+        method: "function totalPredictionAmount() view returns (uint256)",
         params: [],
     });
     
-    // Total funded balance of the campaign
+    // Total funded balance of the pool
     const { data: balance, isLoading: isLoadingBalance } = useReadContract({
         contract: contract,
         method: "function getContractBalance() view returns (uint256)",
         params: [],
     });
 
-    // Get tiers for the campaign
-    const { data: tiers, isLoading: isLoadingTiers } = useReadContract({
+    // Get Outcomes for the pool
+    const { data: outcomes, isLoading: isLoadingOutcomes } = useReadContract({
         contract: contract,
-        method: "function getTiers() view returns ((string name, uint256 amount, uint256 backers)[])",
+        method: "function getOutcomes() view returns ((string name, uint256 totalBets, uint256 initialProbability)[])",
         params: [],
     });
 
-    // Get owner of the campaign
+    // Get owner of the pool
     const { data: owner, isLoading: isLoadingOwner } = useReadContract({
         contract: contract,
         method: "function owner() view returns (address)",
         params: [],
     });
 
-    // Get status of the campaign
+    // Get status of the pool
     const { data: status } = useReadContract({ 
         contract, 
-        method: "function state() view returns (uint8)", 
+        method: "function getPoolStatus() view returns (uint8)", 
         params: [] 
       });
     
@@ -119,7 +119,7 @@ export default function CampaignPage() {
             )}
             <div className="mb-4">
                 <a 
-                    href={`https://base-sepolia.blockscout.com/address/${campaignAddress}`}
+                    href={`https://eth-sepolia.blockscout.com/address/${campaignAddress}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:text-blue-700 underline"
@@ -130,19 +130,25 @@ export default function CampaignPage() {
             <div>
                 <p className="text-lg font-semibold">Choose outcome:</p>
                 <div className="grid grid-cols-3 gap-4">
-                    {isLoadingTiers ? (
+                    {isLoadingOutcomes ? (
                         <p >Loading...</p>
                     ) : (
-                        tiers && tiers.length > 0 ? (
-                            tiers.map((tier, index) => (
-                                <TierCard
-                                    key={index}
-                                    tier={tier}
-                                    index={index}
-                                    contract={contract}
-                                    isEditing={isEditing}
-                                />
-                            ))
+                        outcomes && outcomes.length > 0 ? (
+                            outcomes.map((outcome, index) => {
+                                return (
+                                    <OutcomeCard
+                                        key={index}
+                                        outcome={{
+                                            name: outcome.name,
+                                            totalBets: outcome.totalBets,
+                                            initialProbability: outcome.initialProbability
+                                        }}
+                                        index={index}
+                                        contract={contract}
+                                        isEditing={isEditing}
+                                    />
+                                );
+                            })
                         ) : (
                             !isEditing && (
                                 <p>No outcomes specified</p>
@@ -159,7 +165,7 @@ export default function CampaignPage() {
             </div>
             
             {isModalOpen && (
-                <CreateCampaignModal
+                <CreateOutcomelModal
                     setIsModalOpen={setIsModalOpen}
                     contract={contract}
                 />
@@ -168,56 +174,56 @@ export default function CampaignPage() {
     );
 }
 
-type CreateTierModalProps = {
+type CreateOutcomeModalProps = {
     setIsModalOpen: (value: boolean) => void
     contract: ThirdwebContract
 }
 
-const CreateCampaignModal = (
-    { setIsModalOpen, contract }: CreateTierModalProps
+const CreateOutcomelModal = (
+    { setIsModalOpen, contract }: CreateOutcomeModalProps
 ) => {
-    const [tierName, setTierName] = useState<string>("");
-    const [tierAmount, setTierAmount] = useState<bigint>(1n);
+    const [outcomeName, setOutcomeName] = useState<string>("");
+    const [outcomeProbability, setOutcomeProbability] = useState<bigint>(1n);
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center backdrop-blur-md">
             <div className="w-1/2 bg-slate-100 p-6 rounded-md">
                 <div className="flex justify-between items-center mb-4">
-                    <p className="text-lg font-semibold">Create a Funding Tier</p>
+                    <p className="text-lg font-semibold">Create an Outcome</p>
                     <button
                         className="text-sm px-4 py-2 bg-slate-600 text-white rounded-md"
                         onClick={() => setIsModalOpen(false)}
                     >Close</button>
                 </div>
                 <div className="flex flex-col">
-                    <label>Tier Name:</label>
+                    <label>Outcome Name:</label>
                     <input 
                         type="text" 
-                        value={tierName}
-                        onChange={(e) => setTierName(e.target.value)}
-                        placeholder="Tier Name"
+                        value={outcomeName}
+                        onChange={(e) => setOutcomeName(e.target.value)}
+                        placeholder="Outcome Name"
                         className="mb-4 px-4 py-2 bg-slate-200 rounded-md"
                     />
-                    <label>Tier Cost:</label>
+                    <label>Outcome Initial Probability:</label>
                     <input 
                         type="number"
-                        value={parseInt(tierAmount.toString())}
-                        onChange={(e) => setTierAmount(BigInt(e.target.value))}
+                        value={parseInt(outcomeProbability.toString())}
+                        onChange={(e) => setOutcomeProbability(BigInt(e.target.value))}
                         className="mb-4 px-4 py-2 bg-slate-200 rounded-md"
                     />
                     <TransactionButton
                         transaction={() => prepareContractCall({
                             contract: contract,
-                            method: "function addTier(string _name, uint256 _amount)",
-                            params: [tierName, tierAmount]
+                            method: "function addOutcome(string _name, uint256 _initialProbability)",
+                            params: [outcomeName, outcomeProbability]
                         })}
                         onTransactionConfirmed={async () => {
-                            alert("Tier added successfully!")
+                            alert("Outcome added successfully!")
                             setIsModalOpen(false)
                         }}
                         onError={(error) => alert(`Error: ${error.message}`)}
                         theme={lightTheme()}
-                    >Add Tier</TransactionButton>
+                    >Add Outcome</TransactionButton>
                 </div>
             </div>
         </div>
