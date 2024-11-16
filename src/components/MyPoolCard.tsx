@@ -3,12 +3,13 @@ import Link from "next/link";
 import { getContract } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
 import { useReadContract } from "thirdweb/react";
+import { Button } from "@/components/ui/button";
 
-type MyCampaignCardProps = {
+type MyPoolCardProps = {
     contractAddress: string;
 };
 
-export const MyCampaignCard: React.FC<MyCampaignCardProps> = ({ contractAddress }) => {
+export const MyPoolCard: React.FC<MyPoolCardProps> = ({ contractAddress }) => {
     const contract = getContract({
         client: client,
         chain: sepolia,
@@ -36,15 +37,15 @@ export const MyCampaignCard: React.FC<MyCampaignCardProps> = ({ contractAddress 
                 </div>
                 
                 <Link
-                    href={`/campaign/${contractAddress}`}
+                    href={`/pool/${contractAddress}`}
                     passHref={true}
                 >
-                    <p className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        View Campaign
-                        <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                    <Button className="w-full">
+                        View Pool
+                        <svg className="w-4 h-4 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
                         </svg>
-                    </p>
+                    </Button>
                 </Link>
             </div>
     )

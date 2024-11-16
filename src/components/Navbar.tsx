@@ -3,7 +3,8 @@ import { client } from "@/app/client";
 import Link from "next/link";
 import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import Image from 'next/image';
-import thirdwebIcon from "@public/thirdweb.svg";
+import thirdwebIcon from "@public/vercel.svg";
+import { LineChart } from "lucide-react";
 
 const Navbar = () => {
     const account = useActiveAccount();
@@ -26,28 +27,22 @@ const Navbar = () => {
                     </div>
                     <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                         <div className="flex flex-shrink-0 items-center">
-                            <Image 
-                                src={thirdwebIcon} 
-                                alt="Your Company" 
-                                width={32} 
-                                height={32} 
-                                style={{
-                                    filter: "drop-shadow(0px 0px 24px #a726a9a8)",
-                                }}
-                            />
+                            <div className="text-primary drop-shadow-[0_0_24px_rgba(167,38,169,0.66)]">
+                                <LineChart className="h-8 w-8" />
+                            </div>
                         </div>
                         <div className="hidden sm:ml-6 sm:block">
                             <div className="flex space-x-4">
                                 <Link
                                     href={'/'}
                                 >
-                                    <p className="rounded-md px-3 py-2 text-sm font-medium text-slate-700">Campaigns</p>
+                                    <p className="rounded-md px-3 py-2 text-sm font-medium text-slate-700">Prediction pools</p>
                                 </Link>
                                 {account && (
                                     <Link
                                         href={`/dashboard/${account?.address}`}
                                     >
-                                        <p className="rounded-md px-3 py-2 text-sm font-medium text-slate-700">Dashboard</p>
+                                        <p className="rounded-md px-3 py-2 text-sm font-medium text-slate-700">My pools</p>
                                     </Link>
                                 )}
                             </div>
